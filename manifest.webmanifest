@@ -1,0 +1,14 @@
+{
+  "name": "NTPC Simhadri Plant Guide",
+  "short_name": "Simhadri Plant Guide",
+  "description": "Plant and township locations with Google Maps routes and distances",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef1f0",
+  "theme_color": "#0b4a8b",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
