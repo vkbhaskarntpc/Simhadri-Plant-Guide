@@ -3,7 +3,7 @@
   "title": "NTPC Simhadri Plant Guide",
   "rev": "2026-11-12.1310",
   "updated": "2026-11-12",
-  "count": 102,
+  "count": 103,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -923,6 +923,15 @@
    "note": "",
    "lat": 17.5837,
    "lng": 83.122054,
+   "v": 1
+  },
+  {
+   "id": "xmwd8nl05",
+   "name": "OFL-1",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.586308,
+   "lng": 83.120713,
    "v": 1
   }
  ],
