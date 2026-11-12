@@ -3,7 +3,7 @@
   "title": "NTPC Simhadri Plant Guide",
   "rev": "2026-11-12.1318",
   "updated": "2026-11-12",
-  "count": 109,
+  "count": 110,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -986,6 +986,15 @@
    "note": "",
    "lat": 17.571559,
    "lng": 83.094975,
+   "v": 1
+  },
+  {
+   "id": "xmwd8xupa",
+   "name": "ET Hostel",
+   "cat": "town",
+   "note": "",
+   "lat": 17.570987,
+   "lng": 83.09564,
    "v": 1
   }
  ],
