@@ -3,7 +3,7 @@
   "title": "NTPC Simhadri Plant Guide",
   "rev": "2026-11-12.1311",
   "updated": "2026-11-12",
-  "count": 104,
+  "count": 105,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -941,6 +941,15 @@
    "note": "",
    "lat": 17.581296,
    "lng": 83.122752,
+   "v": 1
+  },
+  {
+   "id": "xmwd8ops5",
+   "name": "Crusher House-1",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.586686,
+   "lng": 83.093929,
    "v": 1
   }
  ],
