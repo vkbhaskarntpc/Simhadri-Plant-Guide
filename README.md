@@ -3,7 +3,7 @@
 Map of NTPC Simhadri plant and township locations with search, road routes,
 distances, turn-by-turn directions and live guidance from your current location.
 
-Version 1.5 · Data revision 2026-11-10 · 95 locations
+Version 1.6 · Land boundaries (KML/KMZ) with live NTPC-land status
 
 ## Files
 
@@ -11,6 +11,7 @@ Version 1.5 · Data revision 2026-11-10 · 95 locations
 |---|---|
 | `index.html` | The app (map library built in) |
 | `data/locations.json` | All locations. The only file to replace when locations change |
+| `data/land.json` | Land boundaries (NTPC land areas), pipelines/routes and reference points from KML files |
 | `manifest.webmanifest`, `icons/`, `favicon.ico` | "Add to Home screen" on phones |
 | `.nojekyll` | Tells GitHub Pages to publish the files as they are |
 | `404.html` | Sends wrong addresses back to the app |
@@ -38,6 +39,13 @@ After that, every add / edit / move is committed to `data/locations.json` a few 
 The token is stored only on that device, never in the page.
 
 Manual way (no token): **Download data file**, then on GitHub edit `data/locations.json` and paste the new content.
+
+## Land boundaries (KML / KMZ)
+
+Admin → section 5 → **Import KML / KMZ**. Polygons become land areas; Google Earth corner-point files
+(Corner 1, 2, 3…) can be joined into a boundary area, route points into a line. Set ownership by tapping an
+area with ✎ Edit / move on. Land data is published to `data/land.json` with Publish now / auto-publish.
+With 📍 Me on, users see live whether they are on NTPC land and get an alert when crossing a boundary.
 
 ## Notes
 

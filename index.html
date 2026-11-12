@@ -781,6 +781,16 @@ ul.list li{grid-template-columns:10px 1fr auto auto}
 .ebtn{border:1px solid var(--line);background:#fff;border-radius:5px;padding:2px 7px;font:600 12px var(--display);color:var(--accent);cursor:pointer}
 .ebtn:hover{border-color:var(--accent)}
 a{color:var(--accent)}
+.landchip{position:absolute;z-index:660;left:10px;bottom:calc(34px + env(safe-area-inset-bottom,0px));max-width:min(380px,calc(100% - 20px));display:flex;flex-direction:column;background:#fff;border-left:7px solid #16a34a;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.35);padding:7px 11px;cursor:pointer}
+.landchip .lt{font:700 14px var(--display);color:var(--ink)}
+.landchip .ls{font:11px var(--mono);color:var(--muted);margin-top:2px}
+#gtabs:not([hidden]) ~ .landchip{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+.mapbox.navon .landchip{bottom:calc(116px + env(safe-area-inset-bottom,0px))}
+table.ltab{border-collapse:collapse;margin-top:6px;font-size:12px;width:100%}
+table.ltab th{text-align:left;font:500 10.5px var(--mono);color:var(--muted);padding:2px 8px 2px 0;vertical-align:top;white-space:nowrap}
+table.ltab td{padding:2px 0;border-bottom:1px solid #eef1f0}
+.landlive{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;font-size:13px;line-height:1.45;margin-bottom:8px}
+.card .chk input[type=radio]{width:auto}
 @media (max-width:820px){.main{flex-direction:column}.mapbox{flex:none;height:58vh}aside{width:auto;border-left:0;border-top:1px solid var(--line);flex:1}}
 </style>
 </head>
@@ -797,7 +807,8 @@ a{color:var(--accent)}
     <div class="gtabs" id="gtabs" hidden><button id="tabG" class="on" type="button">Google route</button><button id="tabS" type="button">Satellite map</button></div>
     <div class="navbar" id="navbar" hidden><div class="ni" id="nvI">⬆</div><div><div class="nt" id="nvT"></div><div class="ns" id="nvS"></div></div>
       <div class="nb"><button type="button" id="nvFollow" class="on">Follow</button><button type="button" id="nvEnd">End</button></div></div>
-    <div class="banner" id="banner" hidden></div></div>
+    <div class="banner" id="banner" hidden></div>
+    <div class="landchip" id="landChip" hidden title="Tap for land details"><div class="lt" id="lcT"></div><div class="ls" id="lcS"></div></div></div>
   <div class="modal" id="modal" hidden><div class="card" id="card" role="dialog" aria-modal="true"></div></div>
   <aside>
     <section class="whereto">
@@ -814,6 +825,13 @@ a{color:var(--accent)}
       <div class="row" style="margin-top:8px"><button class="btn" id="swap">Swap A ↔ B</button><button class="btn" id="clear">Clear</button></div>
     </section>
     <section class="result" id="result"></section>
+    <section id="landSec" hidden>
+      <div class="lbl">Land ownership (KML boundaries)</div>
+      <div class="landlive" id="landLive"></div>
+      <ul class="list" id="landLeg"></ul>
+      <div class="row" style="margin-top:8px"><button class="btn" id="landMe" type="button">📍 Check my position</button><button class="btn" id="landZoom" type="button">Show all boundaries</button></div>
+      <p class="note" style="margin-top:6px">Tap any boundary, line or point on the map for its details. While 📍 Me is on, the box on the map shows whether you are on NTPC land and alerts you when you cross a boundary.</p>
+    </section>
     <p class="note" id="dataSrc" style="font-family:var(--mono);font-size:11px"></p>
     <p class="note" id="viewNote">View mode: search, routes and distances. Editing needs admin login.</p>
     <section><div class="lbl" id="nearLbl">Nearest to A (aerial)</div><ul class="list" id="near"></ul></section>
@@ -862,6 +880,14 @@ a{color:var(--accent)}
       <div class="row" style="margin-top:8px"><button class="btn" id="pwBtn">Change admin password</button></div>
       <div id="resetConf" hidden class="row" style="margin-top:6px;align-items:center"><span class="note">Discard all locations & roads?</span><button class="btn primary" id="resetYes">Reset</button><button class="btn" id="resetNo">Keep</button></div>
     </section>
+
+    <section class="adm">
+      <div class="lbl">5 · Land boundaries (KML / KMZ)</div>
+      <p class="note" style="margin-bottom:8px">Import files from Google Earth, QGIS or the survey team. Polygons become land areas. Files of corner points (Corner 1, 2, 3…) can be joined into a boundary area; route points into a line. After import, switch on <b>✎ Edit / move</b> and tap an area to set its name and ownership. Land data is kept in <span style="font-family:var(--mono)">data/land.json</span> and published to all users with Publish now / auto-publish.</p>
+      <div class="row"><label class="btn primary" style="display:inline-block">Import KML / KMZ<input type="file" id="kmlFile" accept=".kml,.kmz,application/vnd.google-earth.kml+xml,application/vnd.google-earth.kmz,application/xml,text/xml,application/zip,application/octet-stream" hidden></label></div>
+      <ul class="list" id="landFiles" style="margin-top:8px"></ul>
+      <p class="note" id="landPubStat" style="margin-top:6px"></p>
+    </section>
   </aside>
 </div>
 
@@ -887,8 +913,8 @@ let data;try{data=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 // a newer bundled data release replaces older on-device data
 if(!data||!Array.isArray(data.locs)||!data.meta||data.meta.rev<SEED_DATA.meta.rev)data=freshData();
 data.meta=data.meta||freshData().meta;
-data.nodes=data.nodes||{};data.edges=data.edges||[];
-const persisted=()=>({...data,locs:data.locs.filter(l=>l.id!=="me")});
+data.nodes=data.nodes||{};data.edges=data.edges||[];data.land=data.land||[];
+const persisted=()=>({...data,land:undefined,locs:data.locs.filter(l=>l.id!=="me")});
 const save=()=>{try{if(typeof isAdmin!=="undefined"&&isAdmin){data.meta.localEdits=true;}localStorage.setItem(KEY,JSON.stringify(persisted()))}catch(e){}if(typeof isAdmin!=="undefined"&&isAdmin&&window.__ghAuto)window.__ghAuto();};
 const byId=id=>data.locs.find(l=>l.id===id);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -922,7 +948,7 @@ const sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Worl
 const satLbl=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:20,maxNativeZoom:19});
 const street=L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,maxNativeZoom:19,attribution:"© OpenStreetMap contributors"});
 sat.addTo(map);
-L.control.layers({"Satellite":sat,"Street map":street},{"Place names":satLbl},{position:"topright"}).addTo(map);
+const layersCtl=L.control.layers({"Satellite":sat,"Street map":street},{"Place names":satLbl},{position:"topright"}).addTo(map);
 L.control.scale({imperial:false}).addTo(map);
 let tileErr=0;sat.on("tileerror",()=>{if(++tileErr===6)toast("Satellite tiles aren't loading. Check internet access, or switch to Street map (top-right).");});
 const updLabels=()=>map.getContainer().classList.toggle("nolabels",map.getZoom()<16);
@@ -1108,7 +1134,7 @@ function syncGoogle(a,b){
 async function refresh(redrawMarkers=true,zoom=false){
   try{setTimeout(()=>typeof updateNav==="function"&&updateNav(),0);}catch(e){}
   lastRoute=null;
-  if(redrawMarkers)drawMarkers();fillSelects();renderList();renderNear();
+  if(redrawMarkers)drawMarkers();fillSelects();renderList();renderNear();try{renderLandPanel();}catch(e){}
   routeLayer.clearLayers();if(!A||!B){lastPair="";syncGoogle(null,null);}
   const a=byId(A),b=byId(B),R=document.getElementById("result");
   if(!a){R.innerHTML=`<div class="lbl">How to use</div><p class="note">Search a destination above (start = your location), or tap a marker for A and another for B. The Google Maps route opens with the road distance and drive time. <a href="#" id="ex">Try: Main Gate → Unit-4 Boiler</a></p>`;
@@ -1230,11 +1256,11 @@ document.getElementById("dlBtn").onclick=()=>{const txt=JSON.stringify(exportDat
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="locations.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast("Saved locations.json. Upload it to the server data folder to update all users.");};
 document.getElementById("cpBtn").onclick=()=>window.AndroidApp?toast(AndroidApp.copyText(JSON.stringify(exportData()))):navigator.clipboard.writeText(JSON.stringify(exportData())).then(()=>toast("Data copied"),()=>toast("Copy blocked. Use Download instead."));
 document.getElementById("upFile").onchange=e=>{const f=e.target.files[0];if(!f||!isAdmin)return;f.text().then(t=>{try{const d=JSON.parse(t);
-  if(!Array.isArray(d.locs))throw 0;data={meta:{...data.meta,...(d.meta||{}),rev:data.meta.rev},locs:d.locs,nodes:d.nodes||{},edges:d.edges||[]};A=B=null;save();drawRoads();refresh(true);fitAll();toast(`Loaded ${data.locs.length} locations, ${data.edges.length} road segments`);}
+  if(!Array.isArray(d.locs))throw 0;data={meta:{...data.meta,...(d.meta||{}),rev:data.meta.rev},locs:d.locs,nodes:d.nodes||{},edges:d.edges||[],land:data.land};A=B=null;save();drawRoads();refresh(true);fitAll();toast(`Loaded ${data.locs.length} locations, ${data.edges.length} road segments`);}
   catch(_){toast("That file isn't locator data.");}});e.target.value="";};
 const rc=document.getElementById("resetConf");
 document.getElementById("resetBtn").onclick=()=>rc.hidden=false;document.getElementById("resetNo").onclick=()=>rc.hidden=true;
-document.getElementById("resetYes").onclick=()=>{if(!isAdmin)return;data=freshData();A=B=null;save();drawRoads();refresh(true);fitAll();rc.hidden=true;};
+document.getElementById("resetYes").onclick=()=>{if(!isAdmin)return;const keepLand=data.land||[];data=freshData();data.land=keepLand;A=B=null;save();drawRoads();refresh(true);fitAll();rc.hidden=true;};
 
 /* ---------- my position (GPS) ---------- */
 let watchId=null,gpsOn=false,meCircle=null,firstFix=true,follow=true,lastFixAt=0;
@@ -1248,7 +1274,7 @@ function onFix(lat,lng,accuracy){
     if(hav(me,{lat:LAT0,lng:LNG0})>6000)toast("You appear to be outside the plant. Routes are still shown.");
     else if(!B)toast("Your location is the start point. Now search or pick a destination.");
     if(!B)map.setView([lat,lng],Math.max(map.getZoom(),17));}
-  refresh(true,false);
+  refresh(true,false);landOnFix(lat,lng,accuracy);
   if(follow&&A==="me"&&B)map.setView([lat,lng],Math.max(map.getZoom(),17),{animate:true});
 }
 let fixErrShown=0;
@@ -1269,7 +1295,7 @@ function startGPS(){
 function stopGPS(){
   if(NATIVE_LOC){try{window.AndroidApp.stopLocation();}catch(e){}}
   if(watchId!==null)navigator.geolocation.clearWatch(watchId);watchId=null;gpsOn=false;
-  data.locs=data.locs.filter(l=>l.id!=="me");if(meCircle){meCircle.remove();meCircle=null;}
+  data.locs=data.locs.filter(l=>l.id!=="me");if(meCircle){meCircle.remove();meCircle=null;}landOnFix(null);
   if(A==="me")A=null;if(B==="me")B=null;document.getElementById("gpsBtn").classList.remove("on");setFromMeBtn();refresh(true);}
 function useMyLocation(){if(B==="me")B=null;A="me";if(!gpsOn){if(!startGPS()){A=null;refresh(true);}}else refresh(true,true);}
 function setFromMeBtn(){const b=document.getElementById("fromMe");b.classList.toggle("on",gpsOn);b.textContent=gpsOn?"📍 Using my location · tap to stop":"📍 Start from my current location";}
@@ -1363,6 +1389,196 @@ document.getElementById("pwBtn").onclick=()=>{if(!isAdmin)return;
 try{isAdmin=sessionStorage.getItem("smpp-admin")==="1"}catch(e){}
 applyRole();
 
+/* ---------- land ownership: KML / KMZ boundaries + live geofence ---------- */
+const LST={ntpc:{n:"NTPC land",c:"#16a34a",i:"🟢"},acq:{n:"Under acquisition / disputed",c:"#d97706",i:"🟠"},other:{n:"Not NTPC land",c:"#dc2626",i:"🔴"},info:{n:"Reference (pipeline, route, point)",c:"#38bdf8",i:"🔵"}};
+const OUT={n:"Outside mapped NTPC land",c:"#64748b",i:"⚪"};
+map.createPane("land");map.getPane("land").style.zIndex=350;
+const landLayer=L.layerGroup().addTo(map);
+let landIdx=[];
+const LKEY="smpp-land-v1";let landMeta={rev:"",baseRev:"",localEdits:false};
+try{const st=JSON.parse(localStorage.getItem(LKEY));if(st&&Array.isArray(st.land)){data.land=st.land;landMeta={...landMeta,...(st.meta||{})};}}catch(e){}
+const storeLand=()=>{try{localStorage.setItem(LKEY,JSON.stringify({meta:landMeta,land:data.land||[]}))}catch(e){}};
+function saveLand(){if(isAdmin)landMeta.localEdits=true;storeLand();if(isAdmin&&window.__ghLandAuto)window.__ghLandAuto();}
+function landExport(){const now=new Date(),pad=n=>String(n).padStart(2,"0"),rev=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}.${pad(now.getHours())}${pad(now.getMinutes())}`;
+  return {meta:{title:"NTPC Simhadri land boundaries & reference features",rev,updated:rev.slice(0,10),count:(data.land||[]).length,fields:"id, name, st (ntpc|acq|other|info), src, note, info, g (areas: [[outer],[holes]] as [lat,lng]), ln (lines), pt (points)"},land:data.land||[]};}
+const ringArea=r=>{let s=0;for(let i=0,j=r.length-1;i<r.length;j=i++){s+=(r[j][1]*MLNG)*(r[i][0]*MLAT)-(r[i][1]*MLNG)*(r[j][0]*MLAT);}return Math.abs(s)/2;};
+const parcelArea=p=>(p.g||[]).reduce((t,poly)=>t+ringArea(poly[0])-poly.slice(1).reduce((h,r)=>h+ringArea(r),0),0);
+const fmtArea=a=>a>=10000?`${(a/10000).toFixed(2)} ha (${(a/4046.86).toFixed(2)} acres)`:`${Math.round(a)} m² (${(a/4046.86).toFixed(3)} acres)`;
+function inRing(la,ln,r){let c=false;for(let i=0,j=r.length-1;i<r.length;j=i++){const [yi,xi]=r[i],[yj,xj]=r[j];
+  if((yi>la)!==(yj>la)&&ln<(xj-xi)*(la-yi)/(yj-yi)+xi)c=!c;}return c;}
+function segDist(la,ln,a,b){const ax=(a[1]-ln)*MLNG,ay=(a[0]-la)*MLAT,bx=(b[1]-ln)*MLNG,by=(b[0]-la)*MLAT,dx=bx-ax,dy=by-ay,L2=dx*dx+dy*dy;
+  let t=L2?-(ax*dx+ay*dy)/L2:0;t=Math.max(0,Math.min(1,t));return Math.hypot(ax+t*dx,ay+t*dy);}
+function buildLandIdx(){landIdx=(data.land||[]).map(p=>{let s=90,w=180,n=-90,e=-180;
+  const all=[...(p.g||[]).flat(),...(p.ln||[]),...(p.pt?[[p.pt]]:[])];for(const r of all)for(const [la,ln] of r){if(la<s)s=la;if(la>n)n=la;if(ln<w)w=ln;if(ln>e)e=ln;}
+  return {p,s,w,n,e,area:parcelArea(p)};});}
+function landAt(la,ln){let best=null;
+  for(const x of landIdx){if(!x.p.g||!x.p.g.length||la<x.s||la>x.n||ln<x.w||ln>x.e)continue;
+    for(const poly of x.p.g)if(inRing(la,ln,poly[0])&&!poly.slice(1).some(h=>inRing(la,ln,h))){if(!best||x.area<best.area)best=x;break;}}
+  return best;}
+function edgeDist(la,ln){let d=Infinity;const pad=d0=>d0/MLAT;
+  for(const x of landIdx){if(la<x.s-pad(3000)||la>x.n+pad(3000)||ln<x.w-pad(3000)*1.05||ln>x.e+pad(3000)*1.05)continue;
+    if(!x.p.g||!x.p.g.length)continue;
+    for(const r of x.p.g.flat())for(let i=0;i<r.length;i++){const v=segDist(la,ln,r[i],r[(i+1)%r.length]);if(v<d)d=v;}}
+  return d;}
+function landInfoHtml(p,area){const st=LST[p.st]||LST.ntpc,info=Object.entries(p.info||{}).filter(([k,v])=>String(v).trim());
+  return `<div style="min-width:200px;font-family:var(--display)"><div style="font-weight:700;font-size:15px">${esc(p.name||"Unnamed area")}</div>
+    <div style="margin:4px 0"><span class="src" style="background:${st.c};color:#fff">${esc(st.n)}</span></div>
+    ${area?`<div class="note"><b>Area:</b> ${fmtArea(area)}</div>`:""}
+    ${info.length?`<table class="ltab">${info.slice(0,20).map(([k,v])=>`<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table>`:""}
+    ${p.note?`<div class="note" style="margin-top:4px">${esc(p.note)}</div>`:""}
+    <div class="note" style="margin-top:4px;font-size:10.5px">Source: ${esc(p.src||"KML")}</div></div>`;}
+function drawLand(){landLayer.clearLayers();buildLandIdx();
+  for(const x of landIdx){const p=x.p,st=LST[p.st]||LST.ntpc;
+    const hit=e=>{if(drawing||adding)return;L.DomEvent.stopPropagation(e);if(editing&&isAdmin){openLandEditor(p.id);return;}
+      L.popup({maxWidth:300}).setLatLng(e.latlng).setContent(landInfoHtml(p,x.area)).openOn(map);};
+    if(p.g&&p.g.length){const lay=L.polygon(p.g,{pane:"land",color:st.c,weight:2.5,fillColor:st.c,fillOpacity:.13,dashArray:p.st==="acq"?"6 5":null}).addTo(landLayer);
+      lay.on("click",hit);lay.bindTooltip(esc(p.name||st.n),{sticky:true,className:"plbl"});}
+    for(const r of p.ln||[]){const lay=L.polyline(r,{pane:"land",color:st.c,weight:3.5,opacity:.95,dashArray:"8 4"}).addTo(landLayer);lay.on("click",hit);lay.bindTooltip(esc(p.name||"Line"),{sticky:true,className:"plbl"});}
+    if(p.pt){const lay=L.circleMarker(p.pt,{pane:"land",radius:5,color:"#fff",weight:1.5,fillColor:st.c,fillOpacity:1}).addTo(landLayer);lay.on("click",hit);lay.bindTooltip(esc(p.name||"Point"),{direction:"top",offset:[0,-4],className:"plbl"});}}
+  renderLandPanel();landLast=null;if(gpsOn&&byId("me")){const me=byId("me");landOnFix(me.lat,me.lng,999,true);}}
+let landLast=null,landCand=null,landN=0,landFix=null;
+const landChip=document.getElementById("landChip");
+function landOnFix(la,ln,acc,force){
+  if(la==null||!landIdx.length){landChip.hidden=true;landFix=null;renderLandStatus();return;}
+  const hit=landAt(la,ln),key=hit?hit.p.id:"none",dEdge=edgeDist(la,ln);
+  if(landLast===null||force){landLast=key;landCand=null;landN=0;}
+  else if(key!==landLast){if(acc<=60){if(landCand===key)landN++;else{landCand=key;landN=1;}
+      if(landN>=2){const was=landLast;landLast=key;landCand=null;landN=0;landAlert(was,key);}}}
+  else{landCand=null;landN=0;}
+  const cur=landLast==="none"?null:landIdx.find(x=>x.p.id===landLast)||null;
+  landFix={cur,acc,dEdge,la,ln};renderLandStatus();}
+function landAlert(was,now){const p=now==="none"?null:(data.land||[]).find(l=>l.id===now),st=p?(LST[p.st]||LST.ntpc):OUT;
+  const wasP=was==="none"?null:(data.land||[]).find(l=>l.id===was);
+  toast(p?`${st.i} Entered ${st.n}: ${p.name||""}`:`${OUT.i} Left ${wasP?wasP.name||"NTPC land":"NTPC land"} – now outside mapped NTPC land`);
+  try{navigator.vibrate&&navigator.vibrate(p&&p.st==="ntpc"?[120]:[250,120,250]);}catch(e){}}
+function renderLandStatus(){
+  const live=document.getElementById("landLive");
+  if(!landFix){landChip.hidden=true;if(live)live.innerHTML=landIdx.length?`Turn on <b>📍 Me</b> to see live land status as you move.`:"";return;}
+  const {cur,acc,dEdge}=landFix,st=cur?(LST[cur.p.st]||LST.ntpc):OUT,near=isFinite(dEdge)&&dEdge<=Math.max(10,acc);
+  const t=cur?`${st.i} ${st.n}`:`${OUT.i} ${OUT.n}`,sub=(cur&&cur.p.name?cur.p.name+" · ":"")+(isFinite(dEdge)?(near?`at boundary (±${Math.round(acc)} m)`:`boundary ${fmt(dEdge)} away`):"")+` · GPS ±${Math.round(acc)} m`;
+  landChip.hidden=false;landChip.style.borderLeftColor=st.c;
+  document.getElementById("lcT").textContent=t;document.getElementById("lcS").textContent=sub;
+  if(live)live.innerHTML=`<span class="dot" style="display:inline-block;background:${st.c};margin-right:6px"></span><b>${esc(t.slice(t.indexOf(" ")+1))}</b>${cur&&cur.p.name?" · "+esc(cur.p.name):""}<br><span style="font-family:var(--mono);font-size:11px">${esc(sub)}</span>`;}
+landChip.onclick=()=>{if(!landFix)return;const c=landFix.cur;
+  if(c){map.setView([landFix.la,landFix.ln],Math.max(map.getZoom(),17));L.popup({maxWidth:300}).setLatLng([landFix.la,landFix.ln]).setContent(landInfoHtml(c.p,c.area)).openOn(map);}
+  else toast("Your position is not inside any NTPC land boundary loaded in the app.");};
+function landBounds(src){const ls=(data.land||[]).filter(p=>!src||p.src===src),pts=ls.flatMap(p=>src?[...(p.g||[]).flat(2),...(p.ln||[]).flat(),...(p.pt?[p.pt]:[])]:(p.g||[]).flat(2));return pts.length?L.latLngBounds(pts):null;}
+function renderLandPanel(){
+  const sec=document.getElementById("landSec"),ls=data.land||[];sec.hidden=!ls.length&&!isAdmin;
+  const cnt={};let area={},nl=0,np=0;for(const x of landIdx){nl+=(x.p.ln||[]).length;if(x.p.pt)np++;if(!x.p.g||!x.p.g.length)continue;cnt[x.p.st]=(cnt[x.p.st]||0)+1;area[x.p.st]=(area[x.p.st]||0)+x.area;}
+  document.getElementById("landLeg").innerHTML=ls.length?Object.entries(LST).filter(([k])=>cnt[k]).map(([k,v])=>`<li style="cursor:default"><span class="dot" style="background:${v.c}"></span><span class="n">${v.n} · ${cnt[k]} area${cnt[k]>1?"s":""}</span><span class="d">${area[k]?(area[k]/10000).toFixed(1)+" ha":""}</span></li>`).join("")
+    +(nl||np?`<li style="cursor:default"><span class="dot" style="background:${LST.info.c}"></span><span class="n">Also shown: ${nl} line${nl===1?"":"s"}, ${np} point marker${np===1?"":"s"}</span><span class="d"></span></li>`:"")
+    :`<li style="grid-template-columns:1fr;cursor:default"><span class="note">No land boundaries loaded yet.${isAdmin?" Import a KML/KMZ file in section 5 below.":""}</span></li>`;
+  renderLandStatus();
+  const fl=document.getElementById("landFiles");if(!fl)return;
+  const srcs=[...new Set(ls.map(p=>p.src))];
+  fl.innerHTML=srcs.length?srcs.map((s,k)=>{const n=ls.filter(p=>p.src===s).length;return `<li style="grid-template-columns:1fr auto auto;cursor:default"><span class="n" title="${esc(s)}">${esc(s)} · ${n}</span><button class="ebtn" data-lz="${k}">Zoom</button><button class="ebtn" data-lr="${k}" style="color:#b91c1c">Remove</button></li>`;}).join("")
+    :`<li style="grid-template-columns:1fr;cursor:default"><span class="note">No KML files imported.</span></li>`;
+  fl.querySelectorAll("[data-lz]").forEach(b=>b.onclick=()=>{const bb=landBounds(srcs[+b.dataset.lz]);if(bb)map.fitBounds(bb.pad(0.1));});
+  fl.querySelectorAll("[data-lr]").forEach(b=>b.onclick=()=>{if(!isAdmin)return;if(b.dataset.c!=="1"){b.dataset.c="1";b.textContent="Confirm remove";return;}
+    const s=srcs[+b.dataset.lr];data.land=ls.filter(p=>p.src!==s);saveLand();drawLand();toast(`Removed ${s}`);});}
+document.getElementById("landZoom").onclick=()=>{const bb=landBounds();if(bb)map.fitBounds(bb.pad(0.08));else toast("No land boundaries loaded");};
+document.getElementById("landMe").onclick=()=>{if(!gpsOn)startGPS();else{const me=byId("me");if(me)map.setView([me.lat,me.lng],Math.max(map.getZoom(),17));}};
+
+/* KML parsing */
+const AUTO=t=>{t=t.toLowerCase();
+  if(/non[\s-]*ntpc|not\s+(of\s+)?ntpc|private|patta|pvt\.?\s|encroach|government land|govt\.?\s*land|forest|assigned land|poramboke|endowment/.test(t))return "other";
+  if(/under\s+acqui|to\s+be\s+acqui|acquisition\s+pending|pending|disput|litigat|court|proposed|objection/.test(t))return "acq";
+  if(/ntpc|acquired|own(ed)?\s+land|plant\s+boundary|township\s+boundary/.test(t))return "ntpc";return null;};
+function parseKML(text){
+  const doc=new DOMParser().parseFromString(text,"application/xml");if(doc.getElementsByTagName("parsererror").length)throw new Error("not a valid KML file");
+  const T=(el,n)=>Array.from(el.getElementsByTagNameNS("*",n)),kid=(el,n)=>Array.from(el.children).find(c=>c.localName===n);
+  const crd=el=>{if(!el)return [];const out=[];for(const t of el.textContent.trim().split(/\s+/)){const a=t.split(",").map(Number);if(a.length>=2&&isFinite(a[0])&&isFinite(a[1])){const q=[+a[1].toFixed(6),+a[0].toFixed(6)];const l=out[out.length-1];if(!l||l[0]!==q[0]||l[1]!==q[1])out.push(q);}}return out;};
+  const ring=el=>{const r=crd(el&&T(el,"coordinates")[0]);if(r.length>1&&r[0][0]===r[r.length-1][0]&&r[0][1]===r[r.length-1][1])r.pop();return r.length>=3?r:null;};
+  const items=[],pts=[];let points=0;
+  for(const pm of T(doc,"Placemark")){
+    const name=(kid(pm,"name")?.textContent||"").trim();let desc=(kid(pm,"description")?.textContent||"").trim();const info={};
+    let f=pm.parentElement;const path=[];while(f&&f.localName!=="kml"){if(f.localName==="Folder"||f.localName==="Document"){const fn=(kid(f,"name")?.textContent||"").trim();if(fn)path.unshift(fn);}f=f.parentElement;}
+    for(const d of T(pm,"Data")){const k=d.getAttribute("name"),v=(kid(d,"value")?.textContent||"").trim();if(k&&v)info[(kid(d,"displayName")?.textContent||k).trim()]=v;}
+    for(const d of T(pm,"SimpleData")){const k=d.getAttribute("name"),v=d.textContent.trim();if(k&&v)info[k]=v;}
+    if(/<t[rd][\s>]/i.test(desc)){const h=new DOMParser().parseFromString(desc,"text/html");
+      h.querySelectorAll("tr").forEach(tr=>{const c=tr.querySelectorAll("td,th");if(c.length===2){const k=c[0].textContent.trim(),v=c[1].textContent.trim();if(k&&v&&k.length<60)info[k]=v;}});
+      desc=Object.keys(info).length?"":h.body.textContent.replace(/\s+/g," ").trim();}
+    else if(/<[a-z]/i.test(desc))desc=new DOMParser().parseFromString(desc,"text/html").body.textContent.replace(/\s+/g," ").trim();
+    const g=[],ln=[];
+    for(const poly of T(pm,"Polygon")){const o=ring(T(poly,"outerBoundaryIs")[0]);if(!o)continue;g.push([o,...T(poly,"innerBoundaryIs").map(ring).filter(Boolean)]);}
+    for(const ls of T(pm,"LineString")){const c=crd(T(ls,"coordinates")[0]);if(c.length<2)continue;
+      if(c.length>=4&&hav({lat:c[0][0],lng:c[0][1]},{lat:c[c.length-1][0],lng:c[c.length-1][1]})<50){if(c[0][0]===c[c.length-1][0]&&c[0][1]===c[c.length-1][1])c.pop();g.push([c]);}else ln.push(c);}
+    if(!g.length&&!ln.length){const pc=T(pm,"Point").map(p=>crd(T(p,"coordinates")[0])[0]).filter(Boolean);if(pc.length){points++;pts.push({name,folder:path.join(" / "),info,desc:desc.slice(0,300),pt:pc[0]});}continue;}
+    items.push({name,folder:path.join(" / "),desc:desc.slice(0,300),info,g,ln});}
+  if(!items.length&&!pts.length)throw new Error("no areas, lines or points found in the file");
+  return {items,points,pts};}
+// join point placemarks: order by the number in their names (Corner 1, Point 2…) when every name has one, else file order
+function orderPts(ps){const n=p=>{const m=(p.name||"").match(/\d+/);return m?+m[0]:null;},ks=ps.map(n);
+  return ks.every(k=>k!==null)&&new Set(ks).size===ks.length?ps.slice().sort((a,b)=>n(a)-n(b)):ps.slice();}
+function splitGaps(ps,gap){const out=[];let cur=[];for(const p of ps){const l=cur[cur.length-1];if(l&&hav({lat:l.pt[0],lng:l.pt[1]},{lat:p.pt[0],lng:p.pt[1]})>gap){out.push(cur);cur=[];}cur.push(p);}if(cur.length)out.push(cur);return out;}
+function ptsToFeatures(pts,mode,fname){const by={};for(const p of pts)(by[p.folder]=by[p.folder]||[]).push(p);
+  const base=fname.replace(/\.km[lz]$/i,""),out=[];
+  if(mode==="area"){for(const [f,ps] of Object.entries(by)){const o=orderPts(ps);if(o.length<3)continue;out.push({name:f||base,folder:f,desc:"",info:{"Corner points":String(o.length)},g:[[o.map(p=>p.pt)]],ln:[]});}}
+  else if(mode==="line"){for(const [f,ps] of Object.entries(by))splitGaps(orderPts(ps),4000).forEach((seg,k,a)=>{if(seg.length>=2)out.push({name:(f||base)+(a.length>1?` (part ${k+1})`:""),folder:f,desc:"",info:{"Points":String(seg.length)},g:[],ln:[seg.map(p=>p.pt)]});});}
+  else{let u=0;for(const p of pts){const nm=!p.name||/^untitled/i.test(p.name)?`${base} ${++u}`:p.name;out.push({name:nm,folder:p.folder,desc:p.desc,info:p.info,g:[],ln:[],pt:p.pt,isPt:true});}}
+  return out;}
+async function readKMZ(buf){const u=new Uint8Array(buf),dv=new DataView(buf);let e=-1;
+  for(let i=u.length-22;i>=Math.max(0,u.length-66000);i--)if(dv.getUint32(i,true)===0x06054b50){e=i;break;}
+  if(e<0)throw new Error("KMZ file is damaged");
+  let p=dv.getUint32(e+16,true);const n=dv.getUint16(e+10,true),ents=[];
+  for(let k=0;k<n;k++){const m=dv.getUint16(p+10,true),cs=dv.getUint32(p+20,true),fl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),off=dv.getUint32(p+42,true);
+    const nm=new TextDecoder().decode(u.subarray(p+46,p+46+fl));ents.push({nm,m,cs,off});p+=46+fl+xl+cl;}
+  const en=ents.find(x=>/(^|\/)doc\.kml$/i.test(x.nm))||ents.find(x=>/\.kml$/i.test(x.nm));if(!en)throw new Error("no KML inside the KMZ");
+  const s=en.off+30+dv.getUint16(en.off+26,true)+dv.getUint16(en.off+28,true),raw=u.subarray(s,s+en.cs);
+  if(en.m===0)return new TextDecoder().decode(raw);
+  if(en.m!==8||typeof DecompressionStream==="undefined")throw new Error("this device can't open KMZ – export as KML instead");
+  return await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).text();}
+document.getElementById("kmlFile").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f||!isAdmin)return;
+  try{const buf=await f.arrayBuffer(),u=new Uint8Array(buf,0,4);
+    const txt=(u[0]===0x50&&u[1]===0x4b)?await readKMZ(buf):new TextDecoder().decode(buf);
+    importDialog(f.name,parseKML(txt));}catch(err){toast("Couldn't read "+f.name+": "+err.message);}};
+function importDialog(fname,{items,points,pts}){
+  const dup=(data.land||[]).some(p=>p.src===fname),nPoly=items.filter(x=>x.g.length).length,nLine=items.length-nPoly;
+  const numbered=pts.length>=3&&pts.every(p=>/\d/.test(p.name||""))&&/corner|point|pillar|bp|boundary/i.test(pts.map(p=>p.name).join(" "));
+  const ptMode=()=>{const r=document.querySelector('input[name="kPm"]:checked');return r?r.value:"pts";};
+  const all=()=>[...items,...ptsToFeatures(pts,ptMode(),fname)];
+  const tx=x=>[x.name,x.folder,x.desc,...Object.keys(x.info),...Object.values(x.info)].join(" ");
+  card.innerHTML=`<h2>Import land boundaries</h2>
+    <p class="note"><b>${esc(fname)}</b>: ${nPoly} area${nPoly===1?"":"s"}, ${nLine} line${nLine===1?"":"s"}, ${points} point${points===1?"":"s"}.</p>
+    ${pts.length?`<div class="note" style="display:flex;flex-direction:column;gap:4px"><b>Use the ${pts.length} point${pts.length===1?"":"s"} as:</b>
+      <label class="chk"><input type="radio" name="kPm" value="area"${numbered&&!items.length?" checked":""}${pts.length<3?" disabled":""}> One boundary area joining the corners (Corner 1 → 2 → 3 …)</label>
+      <label class="chk"><input type="radio" name="kPm" value="line"${pts.length<2?" disabled":""}> A line through the points (pipeline, railway, route)</label>
+      <label class="chk"><input type="radio" name="kPm" value="pts"${numbered&&!items.length?"":" checked"}> Separate point markers</label></div>`:""}
+    <label>Ownership of these areas<select id="kSt">${Object.entries(LST).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join("")}</select></label>
+    <label class="chk"><input type="checkbox" id="kAuto" checked> Detect from KML names / attributes where possible (e.g. "Private", "Patta", "Under acquisition")</label>
+    <p class="note" id="kPrev"></p>
+    ${dup?`<label class="chk"><input type="checkbox" id="kRep" checked> Replace the earlier import of this file</label>`:""}
+    <div class="row"><button class="btn primary" id="kGo">Add to map</button><button class="btn" id="kX">Cancel</button></div>
+    <p class="note">You can change any area later: switch on <b>✎ Edit / move</b> and tap the area.</p>`;
+  modal.hidden=false;const $=i=>document.getElementById(i);
+  const decide=x=>(!x.g.length?"info":null)||($("kAuto").checked&&AUTO(tx(x)))||$("kSt").value;
+  const prev=()=>{const c={};all().forEach(x=>{const s=decide(x);c[s]=(c[s]||0)+1;});$("kPrev").innerHTML="Result: "+Object.entries(c).map(([k,n])=>`<span style="color:${LST[k].c};font-weight:700">${n} × ${LST[k].n}</span>`).join(" · ");};
+  $("kSt").onchange=$("kAuto").onchange=prev;card.querySelectorAll('input[name="kPm"]').forEach(r=>r.onchange=prev);prev();$("kX").onclick=closeModal;
+  $("kGo").onclick=()=>{const base=Date.now().toString(36);
+    const add=all().map((x,k)=>{const o={id:"p"+base+k,name:x.name||x.folder||`Area ${k+1}`,st:decide(x),src:fname,note:x.desc,info:x.folder?{Folder:x.folder,...x.info}:x.info,g:x.g,ln:x.ln};if(x.pt)o.pt=x.pt;return o;});
+    if(dup&&$("kRep")&&$("kRep").checked)data.land=(data.land||[]).filter(p=>p.src!==fname);
+    data.land=[...(data.land||[]),...add];saveLand();closeModal();drawLand();const bb=landBounds(fname);if(bb)map.fitBounds(bb.pad(0.08));
+    toast(`Added ${add.length} feature${add.length===1?"":"s"} from ${fname}`);};}
+function openLandEditor(id){if(!isAdmin)return;const p=(data.land||[]).find(x=>x.id===id);if(!p)return;
+  card.innerHTML=`<h2>Edit land area</h2>
+    <label>Name<input id="lN" value="${esc(p.name)}"></label>
+    <label>Ownership<select id="lS">${Object.entries(LST).map(([k,v])=>`<option value="${k}"${k===p.st?" selected":""}>${v.n}</option>`).join("")}</select></label>
+    <label>Note (survey no., village, file ref…)<input id="lO" value="${esc(p.note)}"></label>
+    <p class="note">Area: ${fmtArea(parcelArea(p))} · Source: ${esc(p.src)}</p>
+    <div class="row"><button class="btn primary" id="lGo">Save</button><button class="btn" id="lX">Cancel</button><button class="btn" id="lD" style="margin-left:auto;color:#b91c1c">Delete area</button></div>`;
+  modal.hidden=false;const $=i=>document.getElementById(i);$("lX").onclick=closeModal;
+  $("lD").onclick=()=>{if($("lD").dataset.c!=="1"){$("lD").dataset.c="1";$("lD").textContent="Confirm delete";return;}data.land=data.land.filter(x=>x.id!==id);saveLand();closeModal();drawLand();toast("Land area deleted");};
+  $("lGo").onclick=()=>{p.name=$("lN").value.trim();p.st=$("lS").value;p.note=$("lO").value.trim();saveLand();closeModal();drawLand();toast("Land area saved");};}
+drawLand();
+(async()=>{if(location.protocol==="file:")return;
+  try{const r=await fetch("data/land.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();if(!Array.isArray(d.land))return;
+    const srev=(d.meta&&d.meta.rev)||"server";
+    if(landMeta.localEdits&&(!landMeta.baseRev||landMeta.baseRev===srev))return;
+    if(landMeta.baseRev&&srev<landMeta.baseRev)return;
+    data.land=d.land;landMeta={rev:srev,baseRev:srev,localEdits:false};storeLand();drawLand();}catch(e){}})();
+layersCtl.addOverlay(landLayer,"Land boundaries (KML)");
+
 function fitAll(){const core=visibleLocs().filter(l=>hav(l,{lat:LAT0,lng:LNG0})<1400);map.fitBounds(L.latLngBounds(core.map(l=>[l.lat,l.lng])).pad(0.1));}
 drawRoads();refresh(true);fitAll();
 
@@ -1405,8 +1621,25 @@ drawRoads();refresh(true);fitAll();
     }catch(e){say("Publish failed: "+e.message+". Edits are kept on this device.");if(manual)toast("Publish failed: "+e.message);}
     finally{busy=false;if(again){again=false;publish(false);}}
   }
+  const LAPI=`https://api.github.com/repos/${OWNER}/${REPO}/contents/data/land.json`,lsay=t=>{const e=document.getElementById("landPubStat");if(e)e.textContent=t;};
+  let lbusy=false,lagain=false,ltimer=null;
+  async function publishLand(manual){
+    const tok=g(TK);if(!tok){lsay(landMeta.localEdits?"Land edits are on this device only. Set the GitHub token (section 4) to publish them.":"");return;}
+    if(!landMeta.localEdits){if(manual)lsay("Land data: no unpublished changes.");return;}
+    if(lbusy){lagain=true;return;}lbusy=true;lsay("Publishing land data to GitHub…");
+    try{const ex=landExport(),txt=JSON.stringify(ex),h={Authorization:"Bearer "+tok,Accept:"application/vnd.github+json"};let done=false;
+      for(let n=0;n<2&&!done;n++){let sha;const r0=await fetch(LAPI+"?t="+Date.now(),{headers:h,cache:"no-store"});
+        if(r0.ok)sha=(await r0.json()).sha;else if(r0.status!==404)throw new Error(r0.status===401?"token invalid or expired":"GitHub "+r0.status);
+        const r=await fetch(LAPI,{method:"PUT",headers:{...h,"Content-Type":"application/json"},body:JSON.stringify({message:`Update land data (${ex.land.length}) rev ${ex.meta.rev}`,content:b64(txt),...(sha?{sha}:{})})});
+        if(r.ok){landMeta={rev:ex.meta.rev,baseRev:ex.meta.rev,localEdits:false};storeLand();lsay(`Published ${ex.land.length} land features (rev ${ex.meta.rev}).`);if(manual)toast("Land data published");done=true;break;}
+        if(r.status===409||r.status===422)continue;const m=await r.json().catch(()=>({}));throw new Error(r.status===401?"token invalid or expired":r.status===403||r.status===404?"token has no write access to this repo":(m.message||"GitHub "+r.status));}
+      if(!done)throw new Error("file changed on GitHub, try again");
+    }catch(e){lsay("Land publish failed: "+e.message+". Land edits are kept on this device.");if(manual)toast("Land publish failed: "+e.message);}
+    finally{lbusy=false;if(lagain){lagain=false;publishLand(false);}}}
+  window.__ghLandAuto=()=>{if(!g(TK)||g(AK)==="0"){lsay("Land edits saved on this device · press Publish now (section 4) to publish.");return;}clearTimeout(ltimer);lsay("Land edits saved · publishing in a few seconds…");ltimer=setTimeout(()=>publishLand(false),4000);};
+  if(landMeta.localEdits)lsay("Land data has unpublished edits on this device.");
   window.__ghAuto=()=>{if(!g(TK)||g(AK)==="0")return;clearTimeout(timer);say("Edits saved · publishing in a few seconds…");timer=setTimeout(()=>publish(false),4000);};
-  document.getElementById("ghPub").onclick=()=>{if(isAdmin)publish(true);};
+  document.getElementById("ghPub").onclick=()=>{if(isAdmin){publish(true);publishLand(true);}};
   chk.onchange=()=>{s(AK,chk.checked?"1":"0");status();if(chk.checked&&data.meta.localEdits)window.__ghAuto();};
   document.getElementById("ghTok").onclick=()=>{if(!isAdmin)return;
     const v=prompt("Paste the GitHub token (fine-grained, Contents: Read and write, only this repository).\nIt is stored on this device only. Leave empty to remove it.",g(TK)?"(token is set – paste a new one or clear to remove)":"");
@@ -1426,7 +1659,7 @@ setSrc(`Data: built-in · ${data.locs.length} locations`);
     if(data.meta.baseRev&&srev<data.meta.baseRev){setSrc(`Data: latest published ${data.meta.baseRev} (server still updating)`);return;}
     if(data.meta.localEdits&&data.meta.baseRev===srev){setSrc(`Data: your unpublished edits (server version ${srev})`);return;}
     const keepAdmin=data.meta.admin||SEED_DATA.meta.admin;
-    data={meta:{...SEED_DATA.meta,...(d.meta||{}),admin:keepAdmin,rev:srev,baseRev:srev,localEdits:false},locs:d.locs,nodes:d.nodes||{},edges:d.edges||[]};
+    data={meta:{...SEED_DATA.meta,...(d.meta||{}),admin:keepAdmin,rev:srev,baseRev:srev,localEdits:false},locs:d.locs,nodes:d.nodes||{},edges:d.edges||[],land:data.land};
     if(A&&!byId(A))A=null;if(B&&!byId(B))B=null;
     try{localStorage.setItem(KEY,JSON.stringify(persisted()))}catch(e){}
     drawRoads();refresh(true);fitAll();
