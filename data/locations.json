@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1312",
+  "rev": "2026-11-12.1313",
   "updated": "2026-11-12",
-  "count": 108,
+  "count": 109,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -977,6 +977,15 @@
    "note": "",
    "lat": 17.59182,
    "lng": 83.090705,
+   "v": 1
+  },
+  {
+   "id": "xmwd8qz3r",
+   "name": "Stage-1 Ash Slurry PH",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.595694,
+   "lng": 83.0902,
    "v": 1
   }
  ],
