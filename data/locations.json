@@ -3,7 +3,7 @@
   "title": "NTPC Simhadri Plant Guide",
   "rev": "2026-11-12.1240",
   "updated": "2026-11-12",
-  "count": 96,
+  "count": 97,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -869,6 +869,15 @@
    "note": "",
    "lat": 17.569018,
    "lng": 83.093247,
+   "v": 1
+  },
+  {
+   "id": "xmwd7l0ni",
+   "name": "Church Complex",
+   "cat": "town",
+   "note": "",
+   "lat": 17.563167,
+   "lng": 83.08968,
    "v": 1
   }
  ],
