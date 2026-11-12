@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1314",
+  "rev": "2026-11-12.1318",
   "updated": "2026-11-12",
-  "count": 110,
+  "count": 108,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -328,33 +328,6 @@
    "cat": "water",
    "lat": 17.565,
    "lng": 83.135,
-   "v": 0,
-   "note": ""
-  },
-  {
-   "id": "twn",
-   "name": "Township",
-   "cat": "town",
-   "lat": 17.6125,
-   "lng": 83.08,
-   "v": 0,
-   "note": ""
-  },
-  {
-   "id": "hosp",
-   "name": "Township Hospital",
-   "cat": "town",
-   "lat": 17.614,
-   "lng": 83.079,
-   "v": 0,
-   "note": ""
-  },
-  {
-   "id": "edc",
-   "name": "Training Centre",
-   "cat": "town",
-   "lat": 17.611,
-   "lng": 83.0815,
    "v": 0,
    "note": ""
   },
@@ -995,6 +968,15 @@
    "note": "",
    "lat": 17.594175,
    "lng": 83.086824,
+   "v": 1
+  },
+  {
+   "id": "xmwd8szha",
+   "name": "FGD Control Room",
+   "cat": "env",
+   "note": "",
+   "lat": 17.594211,
+   "lng": 83.087915,
    "v": 1
   }
  ],
