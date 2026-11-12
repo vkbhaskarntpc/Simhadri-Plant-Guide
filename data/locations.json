@@ -3,7 +3,7 @@
   "title": "NTPC Simhadri Plant Guide",
   "rev": "2026-11-12.1312",
   "updated": "2026-11-12",
-  "count": 107,
+  "count": 108,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -968,6 +968,15 @@
    "note": "",
    "lat": 17.596525,
    "lng": 83.090517,
+   "v": 1
+  },
+  {
+   "id": "xmwd8q1tp",
+   "name": "TP-4",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.59182,
+   "lng": 83.090705,
    "v": 1
   }
  ],
