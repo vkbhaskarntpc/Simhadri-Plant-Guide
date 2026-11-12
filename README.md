@@ -26,13 +26,18 @@ Version 1.5 · Data revision 2026-11-10 · 95 locations
 4. After a minute or two the site is live at
    `https://<your-github-username>.github.io/simhadri-plant-guide/`
 
-## Updating locations
+## Updating locations (automatic, from phone or PC)
 
-1. Open the site → **Admin login** → add / edit / move locations.
-2. Press **Download data file** → saves `locations.json`.
-3. On GitHub open the `data` folder → **Add file → Upload files** → upload the new
-   `locations.json` (it replaces the old one) → **Commit changes**.
-4. Everyone sees the new data within a few minutes (refresh the page).
+One-time setup on each admin device:
+1. github.com → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token.
+   Repository access: **Only select repositories** → this repo. Permissions → Repository → **Contents: Read and write**. Generate and copy.
+2. Open the site → **Admin login** → section 4 → **Set GitHub token** → paste → OK.
+
+After that, every add / edit / move is committed to `data/locations.json` a few seconds later
+(or press **Publish now**). Everyone sees it within 1–2 minutes after refreshing.
+The token is stored only on that device, never in the page.
+
+Manual way (no token): **Download data file**, then on GitHub edit `data/locations.json` and paste the new content.
 
 ## Notes
 

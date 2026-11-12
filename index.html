@@ -851,7 +851,14 @@ a{color:var(--accent)}
         <button class="btn" id="cpBtn">Copy data</button>
         <button class="btn" id="resetBtn">Reset</button>
       </div>
-      <p class="note" style="margin-top:6px">Edits are saved on this device only. To publish them, press Download data file and upload the saved locations.json to the server's data folder (replace the old file).</p>
+      <p class="note" style="margin-top:6px">Edits are published to all users automatically when GitHub publishing is switched on (below). Otherwise they stay on this device only.</p>
+      <div class="lbl" style="margin-top:12px">4 · Publish to all users (GitHub)</div>
+      <div class="row">
+        <button class="btn primary" id="ghPub">Publish now</button>
+        <button class="btn" id="ghTok">Set GitHub token</button>
+        <label class="note" style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="ghAutoChk"> Auto-publish edits</label>
+      </div>
+      <p class="note" id="ghStat" style="margin-top:6px"></p>
       <div class="row" style="margin-top:8px"><button class="btn" id="pwBtn">Change admin password</button></div>
       <div id="resetConf" hidden class="row" style="margin-top:6px;align-items:center"><span class="note">Discard all locations & roads?</span><button class="btn primary" id="resetYes">Reset</button><button class="btn" id="resetNo">Keep</button></div>
     </section>
@@ -882,7 +889,7 @@ if(!data||!Array.isArray(data.locs)||!data.meta||data.meta.rev<SEED_DATA.meta.re
 data.meta=data.meta||freshData().meta;
 data.nodes=data.nodes||{};data.edges=data.edges||[];
 const persisted=()=>({...data,locs:data.locs.filter(l=>l.id!=="me")});
-const save=()=>{try{if(typeof isAdmin!=="undefined"&&isAdmin){data.meta.localEdits=true;}localStorage.setItem(KEY,JSON.stringify(persisted()))}catch(e){}};
+const save=()=>{try{if(typeof isAdmin!=="undefined"&&isAdmin){data.meta.localEdits=true;}localStorage.setItem(KEY,JSON.stringify(persisted()))}catch(e){}if(typeof isAdmin!=="undefined"&&isAdmin&&window.__ghAuto)window.__ghAuto();};
 const byId=id=>data.locs.find(l=>l.id===id);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function hav(a,b){const R=6371008.8,r=Math.PI/180,dl=(b.lat-a.lat)*r,dn=(b.lng-a.lng)*r;
@@ -1358,6 +1365,54 @@ applyRole();
 
 function fitAll(){const core=visibleLocs().filter(l=>hav(l,{lat:LAT0,lng:LNG0})<1400);map.fitBounds(L.latLngBounds(core.map(l=>[l.lat,l.lng])).pad(0.1));}
 drawRoads();refresh(true);fitAll();
+
+/* ---------- publish to GitHub (data/locations.json) ---------- */
+(()=>{
+  const TK="smpp-gh-token",AK="smpp-gh-auto",LK="smpp-gh-last";
+  const hostOwner=location.hostname.endsWith(".github.io")?location.hostname.split(".")[0]:"";
+  const OWNER=hostOwner||"vkbhaskarntpc";
+  const REPO=(hostOwner&&location.pathname.split("/")[1])||"Simhadri-Plant-Guide";
+  const PATH="data/locations.json",API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
+  const g=k=>{try{return localStorage.getItem(k)}catch(e){return null}},s=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+  const st=document.getElementById("ghStat"),chk=document.getElementById("ghAutoChk");
+  const say=t=>{if(st)st.textContent=t;};
+  const sig=()=>JSON.stringify([persisted().locs,data.nodes||{},data.edges||[]]);
+  const b64=t=>{const b=new TextEncoder().encode(t);let r="";for(let i=0;i<b.length;i+=0x8000)r+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(r);};
+  function status(){const t=g(TK);chk.checked=g(AK)!=="0";
+    say(t?`Token set on this device · repo ${OWNER}/${REPO} · ${chk.checked?"auto-publish ON":"auto-publish OFF"}${data.meta.localEdits?" · unpublished edits":""}`
+         :"No GitHub token on this device. Press Set GitHub token to publish edits to all users.");}
+  let busy=false,again=false,timer=null;
+  async function publish(manual){
+    const tok=g(TK);if(!tok){if(manual)toast("Set the GitHub token first");status();return;}
+    if(!manual&&g(LK)===sig()){status();return;}
+    if(busy){again=true;return;}busy=true;say("Publishing to GitHub…");
+    try{
+      const ex=exportData(),txt=JSON.stringify(ex,null,1),h={Authorization:"Bearer "+tok,Accept:"application/vnd.github+json"};
+      for(let n=0;n<2;n++){
+        let sha;const r0=await fetch(API+"?t="+Date.now(),{headers:h,cache:"no-store"});
+        if(r0.ok)sha=(await r0.json()).sha;else if(r0.status!==404)throw new Error(r0.status===401?"token invalid or expired":"GitHub "+r0.status);
+        const r=await fetch(API,{method:"PUT",headers:{...h,"Content-Type":"application/json"},
+          body:JSON.stringify({message:`Update locations (${ex.locs.length}) rev ${ex.meta.rev}`,content:b64(txt),...(sha?{sha}:{})})});
+        if(r.ok){data.meta.rev=ex.meta.rev;data.meta.baseRev=ex.meta.rev;data.meta.localEdits=false;
+          try{localStorage.setItem(KEY,JSON.stringify(persisted()))}catch(e){}
+          s(LK,sig());say(`Published ${ex.locs.length} locations (rev ${ex.meta.rev}). All users see it in 1–2 minutes after refresh.`);
+          if(manual)toast("Published to GitHub");return;}
+        if(r.status===409||r.status===422&&n===0)continue;
+        const m=await r.json().catch(()=>({}));
+        throw new Error(r.status===401?"token invalid or expired":r.status===403||r.status===404?"token has no write access to this repo":(m.message||"GitHub "+r.status));
+      }
+      throw new Error("file changed on GitHub, try again");
+    }catch(e){say("Publish failed: "+e.message+". Edits are kept on this device.");if(manual)toast("Publish failed: "+e.message);}
+    finally{busy=false;if(again){again=false;publish(false);}}
+  }
+  window.__ghAuto=()=>{if(!g(TK)||g(AK)==="0")return;clearTimeout(timer);say("Edits saved · publishing in a few seconds…");timer=setTimeout(()=>publish(false),4000);};
+  document.getElementById("ghPub").onclick=()=>{if(isAdmin)publish(true);};
+  chk.onchange=()=>{s(AK,chk.checked?"1":"0");status();if(chk.checked&&data.meta.localEdits)window.__ghAuto();};
+  document.getElementById("ghTok").onclick=()=>{if(!isAdmin)return;
+    const v=prompt("Paste the GitHub token (fine-grained, Contents: Read and write, only this repository).\nIt is stored on this device only. Leave empty to remove it.",g(TK)?"(token is set – paste a new one or clear to remove)":"");
+    if(v===null||v.startsWith("(token is set"))return;s(TK,v.trim()||null);toast(v.trim()?"Token saved on this device":"Token removed");status();};
+  status();
+})();
 /* ---------- shared data file on the server ---------- */
 const DATA_URL="data/locations.json";
 function setSrc(t){const e=document.getElementById("dataSrc");if(e)e.textContent=t;}
@@ -1368,6 +1423,7 @@ setSrc(`Data: built-in · ${data.locs.length} locations`);
     const r=await fetch(DATA_URL+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);
     const d=await r.json();if(!Array.isArray(d.locs)||!d.locs.length)throw new Error("no locations in file");
     const srev=(d.meta&&d.meta.rev)||"server";
+    if(data.meta.baseRev&&srev<data.meta.baseRev){setSrc(`Data: latest published ${data.meta.baseRev} (server still updating)`);return;}
     if(data.meta.localEdits&&data.meta.baseRev===srev){setSrc(`Data: your unpublished edits (server version ${srev})`);return;}
     const keepAdmin=data.meta.admin||SEED_DATA.meta.admin;
     data={meta:{...SEED_DATA.meta,...(d.meta||{}),admin:keepAdmin,rev:srev,baseRev:srev,localEdits:false},locs:d.locs,nodes:d.nodes||{},edges:d.edges||[]};
