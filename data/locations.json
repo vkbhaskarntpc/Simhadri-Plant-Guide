@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1246",
+  "rev": "2026-11-12.1248",
   "updated": "2026-11-12",
-  "count": 99,
+  "count": 100,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -896,6 +896,15 @@
    "note": "",
    "lat": 17.565528,
    "lng": 83.0868,
+   "v": 1
+  },
+  {
+   "id": "xmwd7umbz",
+   "name": "Tennis Court",
+   "cat": "town",
+   "note": "",
+   "lat": 17.56621,
+   "lng": 83.089256,
    "v": 1
   }
  ],
