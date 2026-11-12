@@ -1,0 +1,868 @@
+{
+ "meta": {
+  "title": "NTPC Simhadri Plant Guide",
+  "rev": "2026-11-12.1239",
+  "updated": "2026-11-12",
+  "count": 95,
+  "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
+ },
+ "locs": [
+  {
+   "id": "u1",
+   "name": "Unit-1 Boiler",
+   "cat": "power",
+   "lat": 17.596995,
+   "lng": 83.085375,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "u2",
+   "name": "Unit-2 Boiler",
+   "cat": "power",
+   "lat": 17.596995,
+   "lng": 83.086339,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "u3",
+   "name": "Unit-3 Boiler",
+   "cat": "power",
+   "lat": 17.596995,
+   "lng": 83.087518,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "u4",
+   "name": "Unit-4 Boiler",
+   "cat": "power",
+   "lat": 17.596995,
+   "lng": 83.088696,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "tg1",
+   "name": "Stage-II TG Hall",
+   "cat": "power",
+   "lat": 17.597767,
+   "lng": 83.085857,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "tg2",
+   "name": "Stage-I TG Hall",
+   "cat": "power",
+   "lat": 17.597767,
+   "lng": 83.088643,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "gt",
+   "name": "GT / Transformer yard",
+   "cat": "elec",
+   "lat": 17.598231,
+   "lng": 83.087464,
+   "v": 0,
+   "note": ""
+  },
+  {
+   "id": "sy",
+   "name": "400 kV Switchyard",
+   "cat": "elec",
+   "lat": 17.600394,
+   "lng": 83.087679,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "esp1",
+   "name": "Unit-4 ESP",
+   "cat": "env",
+   "lat": 17.596167,
+   "lng": 83.085705,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "esp2",
+   "name": "Unit-2 ESP",
+   "cat": "env",
+   "lat": 17.596171,
+   "lng": 83.088214,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "ch1",
+   "name": "Stage-II Chimney",
+   "cat": "env",
+   "lat": 17.59478,
+   "lng": 83.086446,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "ch2",
+   "name": "Stage-I Chimney",
+   "cat": "env",
+   "lat": 17.594987,
+   "lng": 83.08875,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "fgd1",
+   "name": "FGD Chimney Unit-4",
+   "cat": "env",
+   "lat": 17.593287,
+   "lng": 83.085857,
+   "v": 0,
+   "note": ""
+  },
+  {
+   "id": "fgd2",
+   "name": "FGD Chimney Unit-1",
+   "cat": "env",
+   "lat": 17.59375,
+   "lng": 83.089071,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "cte1",
+   "name": "Cooling Tower – 1",
+   "cat": "water",
+   "lat": 17.595374,
+   "lng": 83.093843,
+   "v": 1,
+   "note": "Natural draft"
+  },
+  {
+   "id": "cte2",
+   "name": "Cooling Tower – 2",
+   "cat": "water",
+   "lat": 17.595231,
+   "lng": 83.091778,
+   "v": 1,
+   "note": "Natural draft"
+  },
+  {
+   "id": "cts1",
+   "name": "Cooling Tower – 3",
+   "cat": "water",
+   "lat": 17.591815,
+   "lng": 83.08775,
+   "v": 1,
+   "note": "Natural draft"
+  },
+  {
+   "id": "cts2",
+   "name": "Cooling Tower – 4",
+   "cat": "water",
+   "lat": 17.58982,
+   "lng": 83.08775,
+   "v": 1,
+   "note": "Natural draft"
+  },
+  {
+   "id": "pt",
+   "name": "Water Treatment / Clarifiers",
+   "cat": "water",
+   "lat": 17.597819,
+   "lng": 83.092232,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "dm",
+   "name": "Fire water Tanks",
+   "cat": "water",
+   "lat": 17.597098,
+   "lng": 83.091107,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "rwr",
+   "name": "Raw Water Reservoir",
+   "cat": "water",
+   "lat": 17.589642,
+   "lng": 83.111744,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "fspv",
+   "name": "Floating Solar (25 MW FSPV)",
+   "cat": "green",
+   "lat": 17.590501,
+   "lng": 83.117902,
+   "v": 1,
+   "note": "On reservoir"
+  },
+  {
+   "id": "csy",
+   "name": "Coal Stockyard – Stage 2",
+   "cat": "coal",
+   "lat": 17.5894,
+   "lng": 83.091607,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "csy2",
+   "name": "Coal Stockyard – Stage 1",
+   "cat": "coal",
+   "lat": 17.589925,
+   "lng": 83.095893,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "crh",
+   "name": "FGD Crusher House",
+   "cat": "coal",
+   "lat": 17.592707,
+   "lng": 83.091821,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "wt",
+   "name": "Wagon Tippler-1",
+   "cat": "coal",
+   "lat": 17.585725,
+   "lng": 83.095281,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "fuel",
+   "name": "Fuel Oil Tanks",
+   "cat": "power",
+   "lat": 17.592655,
+   "lng": 83.096,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "gate",
+   "name": "Main Plant Gate",
+   "cat": "admin",
+   "lat": 17.599003,
+   "lng": 83.085429,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "adm",
+   "name": "Fire Station",
+   "cat": "admin",
+   "lat": 17.600703,
+   "lng": 83.084571,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "ashd",
+   "name": "Ash Dyke Lagoon 4",
+   "cat": "ash",
+   "lat": 17.57945,
+   "lng": 83.117557,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "etp",
+   "name": "PT Plant FGD",
+   "cat": "env",
+   "lat": 17.591447,
+   "lng": 83.089786,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "silo",
+   "name": "AHP Office",
+   "cat": "ash",
+   "lat": 17.594653,
+   "lng": 83.089602,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "store",
+   "name": "Main Stores",
+   "cat": "admin",
+   "lat": 17.596264,
+   "lng": 83.091472,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "ws",
+   "name": "Stage-1 CWPH",
+   "cat": "water",
+   "lat": 17.598952,
+   "lng": 83.090786,
+   "v": 1,
+   "note": ""
+  },
+  {
+   "id": "bess",
+   "name": "BESS Site",
+   "cat": "green",
+   "lat": 17.59667,
+   "lng": 83.108986,
+   "v": 0,
+   "note": ""
+  },
+  {
+   "id": "swi",
+   "name": "Seawater Intake Pump House",
+   "cat": "water",
+   "lat": 17.565,
+   "lng": 83.135,
+   "v": 0,
+   "note": ""
+  },
+  {
+   "id": "twn",
+   "name": "Township",
+   "cat": "town",
+   "lat": 17.6125,
+   "lng": 83.08,
+   "v": 0,
+   "note": ""
+  },
+  {
+   "id": "hosp",
+   "name": "Township Hospital",
+   "cat": "town",
+   "lat": 17.614,
+   "lng": 83.079,
+   "v": 0,
+   "note": ""
+  },
+  {
+   "id": "edc",
+   "name": "Training Centre",
+   "cat": "town",
+   "lat": 17.611,
+   "lng": 83.0815,
+   "v": 0,
+   "note": ""
+  },
+  {
+   "id": "xmw93ahvp",
+   "name": "FGD Chimney Unit-3",
+   "cat": "env",
+   "note": "",
+   "lat": 17.593441,
+   "lng": 83.08696,
+   "v": 1
+  },
+  {
+   "id": "xmw93az6u",
+   "name": "FGD Chimney Unit-2",
+   "cat": "env",
+   "note": "",
+   "lat": 17.593758,
+   "lng": 83.088259,
+   "v": 1
+  },
+  {
+   "id": "xmw93dl7h",
+   "name": "Stage-1 AHP Control room",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.595308,
+   "lng": 83.090031,
+   "v": 1
+  },
+  {
+   "id": "xmw93f06y",
+   "name": "Central Workshop1",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.59441,
+   "lng": 83.08994,
+   "v": 1
+  },
+  {
+   "id": "xmw93g1j3",
+   "name": "Unit-1 ESP",
+   "cat": "env",
+   "note": "",
+   "lat": 17.596295,
+   "lng": 83.089251,
+   "v": 1
+  },
+  {
+   "id": "xmw93gl3z",
+   "name": "Unit-3 ESP",
+   "cat": "env",
+   "note": "",
+   "lat": 17.596182,
+   "lng": 83.086762,
+   "v": 1
+  },
+  {
+   "id": "xmw93h6jo",
+   "name": "Sankalp-1 Building",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.597624,
+   "lng": 83.090522,
+   "v": 1
+  },
+  {
+   "id": "xmw93hfnn",
+   "name": "Sankalp-2 Building",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.598059,
+   "lng": 83.090469,
+   "v": 1
+  },
+  {
+   "id": "xmw93ic40",
+   "name": "Plant Main Canteen",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.595522,
+   "lng": 83.091383,
+   "v": 1
+  },
+  {
+   "id": "xmw93lyv9",
+   "name": "Wagon Tippler-2",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.585045,
+   "lng": 83.095409,
+   "v": 1
+  },
+  {
+   "id": "xmw93n4ql",
+   "name": "Coal Bhawan",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.589402,
+   "lng": 83.093422,
+   "v": 1
+  },
+  {
+   "id": "xmw93ndr9",
+   "name": "CHP Control room",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.589621,
+   "lng": 83.093379,
+   "v": 1
+  },
+  {
+   "id": "xmw93nk9p",
+   "name": "Fuel Bhawan",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.590115,
+   "lng": 83.093368,
+   "v": 1
+  },
+  {
+   "id": "xmw93oz1p",
+   "name": "FOPH",
+   "cat": "power",
+   "note": "",
+   "lat": 17.593014,
+   "lng": 83.096233,
+   "v": 1
+  },
+  {
+   "id": "xmw93qq2d",
+   "name": "Fly ash Silos- Stage 2",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.588297,
+   "lng": 83.088704,
+   "v": 1
+  },
+  {
+   "id": "xmw93r3gc",
+   "name": "Fly ash silos- Aug/Stg1",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.587589,
+   "lng": 83.088749,
+   "v": 1
+  },
+  {
+   "id": "xmw93rpjp",
+   "name": "Stage 2 Silo Control room",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.588563,
+   "lng": 83.088634,
+   "v": 1
+  },
+  {
+   "id": "xmw93t2fw",
+   "name": "Stage-2 CWPH",
+   "cat": "water",
+   "note": "",
+   "lat": 17.59273,
+   "lng": 83.085855,
+   "v": 1
+  },
+  {
+   "id": "xmw93uczy",
+   "name": "Fly ash silos Stage-1",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.592436,
+   "lng": 83.086645,
+   "v": 1
+  },
+  {
+   "id": "xmw93uwzi",
+   "name": "Safety park",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.598478,
+   "lng": 83.085437,
+   "v": 1
+  },
+  {
+   "id": "xmw93v592",
+   "name": "Parking Yard- Ash vehicles",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.599695,
+   "lng": 83.084656,
+   "v": 1
+  },
+  {
+   "id": "xmw93w3w0",
+   "name": "Switch yard Control room",
+   "cat": "elec",
+   "note": "",
+   "lat": 17.599327,
+   "lng": 83.088562,
+   "v": 1
+  },
+  {
+   "id": "xmw93xzjv",
+   "name": "Plant Gate (Alternate)- Township side",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.584919,
+   "lng": 83.098014,
+   "v": 1
+  },
+  {
+   "id": "xmw93yqwj",
+   "name": "Fuel Coordination Office",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.589131,
+   "lng": 83.104545,
+   "v": 1
+  },
+  {
+   "id": "xmw93zk7h",
+   "name": "STP",
+   "cat": "env",
+   "note": "",
+   "lat": 17.588484,
+   "lng": 83.106766,
+   "v": 1
+  },
+  {
+   "id": "xmw93zuml",
+   "name": "EDP PH",
+   "cat": "water",
+   "note": "",
+   "lat": 17.587788,
+   "lng": 83.106827,
+   "v": 1
+  },
+  {
+   "id": "xmw940cdp",
+   "name": "Plant Gate (R&D Side)",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.594444,
+   "lng": 83.106892,
+   "v": 1
+  },
+  {
+   "id": "xmw940wlh",
+   "name": "Central Stores Building",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.593109,
+   "lng": 83.103644,
+   "v": 1
+  },
+  {
+   "id": "xmw9430id",
+   "name": "BESS Area",
+   "cat": "green",
+   "note": "",
+   "lat": 17.600419,
+   "lng": 83.091083,
+   "v": 1
+  },
+  {
+   "id": "xmw943o0d",
+   "name": "Admin Building Gate",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.601651,
+   "lng": 83.083583,
+   "v": 1
+  },
+  {
+   "id": "xmw9441t9",
+   "name": "Admin Building (Samanvay)",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.601986,
+   "lng": 83.084147,
+   "v": 1
+  },
+  {
+   "id": "xmw944ivp",
+   "name": "Savyaas Building",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.602333,
+   "lng": 83.084536,
+   "v": 1
+  },
+  {
+   "id": "xmw944rjx",
+   "name": "IT building",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.601387,
+   "lng": 83.084149,
+   "v": 1
+  },
+  {
+   "id": "xmw944y5h",
+   "name": "Documentation Building",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.602316,
+   "lng": 83.083546,
+   "v": 1
+  },
+  {
+   "id": "xmw9as7k6",
+   "name": "Township Main Gate",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.571632,
+   "lng": 83.088468,
+   "v": 1
+  },
+  {
+   "id": "xmw9asj9h",
+   "name": "Samudrika GH",
+   "cat": "town",
+   "note": "",
+   "lat": 17.570611,
+   "lng": 83.089031,
+   "v": 1
+  },
+  {
+   "id": "xmw9asss7",
+   "name": "Sarada GH",
+   "cat": "town",
+   "note": "",
+   "lat": 17.570204,
+   "lng": 83.090828,
+   "v": 1
+  },
+  {
+   "id": "xmw9at7it",
+   "name": "Shopping Complex",
+   "cat": "town",
+   "note": "",
+   "lat": 17.569969,
+   "lng": 83.09233,
+   "v": 1
+  },
+  {
+   "id": "xmw9athq5",
+   "name": "Temple Complex",
+   "cat": "town",
+   "note": "",
+   "lat": 17.568964,
+   "lng": 83.091823,
+   "v": 1
+  },
+  {
+   "id": "xmw9atr8l",
+   "name": "Bal Bharathi Public School",
+   "cat": "town",
+   "note": "",
+   "lat": 17.569204,
+   "lng": 83.095613,
+   "v": 1
+  },
+  {
+   "id": "xmw9au5ym",
+   "name": "Shakuntalam Auditorium",
+   "cat": "town",
+   "note": "",
+   "lat": 17.569542,
+   "lng": 83.096748,
+   "v": 1
+  },
+  {
+   "id": "xmw9avy6e",
+   "name": "Raw Water PH",
+   "cat": "water",
+   "note": "",
+   "lat": 17.593794,
+   "lng": 83.109426,
+   "v": 1
+  },
+  {
+   "id": "xmw9awdod",
+   "name": "Steel yard",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.592945,
+   "lng": 83.101852,
+   "v": 1
+  },
+  {
+   "id": "xmw9awpba",
+   "name": "CSSP Tanks",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.590327,
+   "lng": 83.099856,
+   "v": 1
+  },
+  {
+   "id": "xmw9axuvq",
+   "name": "Ash Dyke Lagoon 1",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.590767,
+   "lng": 83.124726,
+   "v": 1
+  },
+  {
+   "id": "xmw9ayjdz",
+   "name": "Ash Dyke Lagoon 2",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.587351,
+   "lng": 83.128738,
+   "v": 1
+  },
+  {
+   "id": "xmw9az07y",
+   "name": "Ash Dyke Lagoon 3",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.577573,
+   "lng": 83.123782,
+   "v": 1
+  },
+  {
+   "id": "xmw9aznus",
+   "name": "Stadium Complex",
+   "cat": "town",
+   "note": "",
+   "lat": 17.567969,
+   "lng": 83.096718,
+   "v": 1
+  },
+  {
+   "id": "xmw9azzt0",
+   "name": "Samyukta Function hall",
+   "cat": "town",
+   "note": "",
+   "lat": 17.567596,
+   "lng": 83.095892,
+   "v": 1
+  },
+  {
+   "id": "xmw9b0epp",
+   "name": "Sagarika Recreation Club",
+   "cat": "town",
+   "note": "",
+   "lat": 17.568578,
+   "lng": 83.09593,
+   "v": 1
+  },
+  {
+   "id": "xmw9b0xu3",
+   "name": "Tarangam Executive Club",
+   "cat": "town",
+   "note": "",
+   "lat": 17.57026,
+   "lng": 83.096863,
+   "v": 1
+  },
+  {
+   "id": "xmw9b1anw",
+   "name": "RLI",
+   "cat": "town",
+   "note": "",
+   "lat": 17.570245,
+   "lng": 83.096504,
+   "v": 1
+  },
+  {
+   "id": "xmw9b1nvn",
+   "name": "Swimming Pool",
+   "cat": "town",
+   "note": "",
+   "lat": 17.569969,
+   "lng": 83.097292,
+   "v": 1
+  },
+  {
+   "id": "xmw9b27aa",
+   "name": "Track Hopper-1",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.586942,
+   "lng": 83.097582,
+   "v": 1
+  },
+  {
+   "id": "xmw9b2fu2",
+   "name": "Track Hopper-2",
+   "cat": "coal",
+   "note": "",
+   "lat": 17.58776,
+   "lng": 83.097432,
+   "v": 1
+  },
+  {
+   "id": "xmw9b6pqv",
+   "name": "Material Gate",
+   "cat": "admin",
+   "note": "",
+   "lat": 17.588241,
+   "lng": 83.086735,
+   "v": 1
+  }
+ ],
+ "nodes": {},
+ "edges": []
+}
