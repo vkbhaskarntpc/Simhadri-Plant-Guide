@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1240",
+  "rev": "2026-11-12.1241",
   "updated": "2026-11-12",
-  "count": 97,
+  "count": 98,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -878,6 +878,15 @@
    "note": "",
    "lat": 17.563167,
    "lng": 83.08968,
+   "v": 1
+  },
+  {
+   "id": "xmwd7lho6",
+   "name": "Masjid Complex",
+   "cat": "town",
+   "note": "",
+   "lat": 17.562021,
+   "lng": 83.094272,
    "v": 1
   }
  ],
