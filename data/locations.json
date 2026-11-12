@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1248",
+  "rev": "2026-11-12.1310",
   "updated": "2026-11-12",
-  "count": 100,
+  "count": 101,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -905,6 +905,15 @@
    "note": "",
    "lat": 17.56621,
    "lng": 83.089256,
+   "v": 1
+  },
+  {
+   "id": "xmwd8mw6u",
+   "name": "Stage-1 AWRC PH",
+   "cat": "ash",
+   "note": "",
+   "lat": 17.584702,
+   "lng": 83.119029,
    "v": 1
   }
  ],
