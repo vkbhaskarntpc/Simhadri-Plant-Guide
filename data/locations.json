@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1320",
+  "rev": "2026-11-12.1605",
   "updated": "2026-11-12",
-  "count": 111,
+  "count": 110,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -311,15 +311,6 @@
    "lat": 17.598952,
    "lng": 83.090786,
    "v": 1,
-   "note": ""
-  },
-  {
-   "id": "bess",
-   "name": "BESS Site",
-   "cat": "green",
-   "lat": 17.59667,
-   "lng": 83.108986,
-   "v": 0,
    "note": ""
   },
   {
