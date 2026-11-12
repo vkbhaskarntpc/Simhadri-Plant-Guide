@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1319",
+  "rev": "2026-11-12.1320",
   "updated": "2026-11-12",
-  "count": 110,
+  "count": 111,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -995,6 +995,15 @@
    "note": "",
    "lat": 17.570987,
    "lng": 83.09564,
+   "v": 1
+  },
+  {
+   "id": "xmwd8zw8h",
+   "name": "1TPD Hydrogen Plant",
+   "cat": "green",
+   "note": "",
+   "lat": 17.585193,
+   "lng": 83.08857,
    "v": 1
   }
  ],
