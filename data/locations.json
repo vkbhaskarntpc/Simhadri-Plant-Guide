@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1241",
+  "rev": "2026-11-12.1246",
   "updated": "2026-11-12",
-  "count": 98,
+  "count": 99,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -887,6 +887,15 @@
    "note": "",
    "lat": 17.562021,
    "lng": 83.094272,
+   "v": 1
+  },
+  {
+   "id": "xmwd7pvog",
+   "name": "CISF Area",
+   "cat": "town",
+   "note": "",
+   "lat": 17.565528,
+   "lng": 83.0868,
    "v": 1
   }
  ],
