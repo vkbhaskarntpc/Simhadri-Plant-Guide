@@ -1,7 +1,7 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1318",
+  "rev": "2026-11-12.1319",
   "updated": "2026-11-12",
   "count": 110,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
@@ -640,7 +640,7 @@
   {
    "id": "xmw9as7k6",
    "name": "Township Main Gate",
-   "cat": "admin",
+   "cat": "town",
    "note": "",
    "lat": 17.571632,
    "lng": 83.088468,
