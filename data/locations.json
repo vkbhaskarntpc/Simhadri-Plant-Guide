@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "NTPC Simhadri Plant Guide",
-  "rev": "2026-11-12.1239",
+  "rev": "2026-11-12.1240",
   "updated": "2026-11-12",
-  "count": 95,
+  "count": 96,
   "fields": "id, name, cat (category), lat, lng (WGS84), v (1 = position verified), note"
  },
  "locs": [
@@ -860,6 +860,15 @@
    "note": "",
    "lat": 17.588241,
    "lng": 83.086735,
+   "v": 1
+  },
+  {
+   "id": "xmwd7kime",
+   "name": "Deepika Ladies Club & Bal Bhawan",
+   "cat": "town",
+   "note": "",
+   "lat": 17.569018,
+   "lng": 83.093247,
    "v": 1
   }
  ],
